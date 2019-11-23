@@ -23,6 +23,18 @@ class Spritesheet:
 		image = pg.transform.scale(image, (width // 3, height // 3))
 		return image
 
+class Spritesheet2:
+	# utility class for loading and parsing spritesheets
+	def __init__(self, filename):
+		self.spritesheet2 = pg.image.load(filename).convert()
+
+	def get_image(self, x, y, width, height):
+		# grab an image out of a larger spritesheet
+		image = pg.Surface((width, height))
+		image.blit(self.spritesheet2, (0, 0), (x, y, width, height))
+		image = pg.transform.scale(image, (width // 3, height // 3))
+		return image
+
 class Player(pg.sprite.Sprite):
 	def __init__(self, game):
 		self._layer = PLAYER_LAYER
@@ -144,9 +156,15 @@ class Mob(pg.sprite.Sprite):
 		pow_img = pg.image.load(path.join(img_dir, 'medkit2.png')).convert()
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
+
+		#images = [self.game.trump_iddle.png.get_image(0, 192, 380, 94), 
+		#		 self.game.spritesheet2.get_image(0, 96, 380, 94), 
+		#		 self.game.spritesheet2.get_image(382, 408, 200, 100), 
+		#		 self.game.spritesheet2.get_image(232, 1288, 200, 100)]
+
 		self.image_straight = pg.image.load(path.join(img_dir, 'trumpstraight.png')).convert()
 		self.image_straight.set_colorkey(BLACK)
-		self.image_right = pg.image.load(path.join(img_dir, 'trump2.png')).convert()
+		self.image_right = pg.image.load(path.join(img_dir, 'trumpworks.png')).convert()
 		self.image_right.set_colorkey(BLACK)
 		self.image_left = pg.image.load(path.join(img_dir, 'trump.png')).convert()
 		self.image_left.set_colorkey(BLACK)

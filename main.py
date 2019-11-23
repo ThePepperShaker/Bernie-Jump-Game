@@ -35,6 +35,7 @@ class Game:
 				self.highscore = 0
 		# load spritesheet image 
 		self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+		self.spritesheet2 = Spritesheet2(path.join(img_dir, SPRITESHEET_TRUMP))
 		# load sounds 
 		self.snd_dir = path.join(self.dir, 'sound')
 		self.jump_sound = pg.mixer.Sound(path.join(self.snd_dir, 'Huge.wav'))
@@ -240,6 +241,7 @@ class Game:
 		self.draw_text('Press any key to play again', 22, WHITE, WIDTH / 2, HEIGHT * 3/4)
 		if self.score > self.highscore:
 			self.highscore = self.score 
+			# insert option for player to enter name and add name to list of highscores
 			self.draw_text("NEW HIGH SCORE", 22, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
 			with open(path.join(self.dir, HS_FILE), 'r+') as f:
 				f.write(str(self.score))
