@@ -8,7 +8,6 @@ FPS = 60
 FONT_NAME = 'helvetica'
 HS_FILE = 'highscore.txt'
 SPRITESHEET = 'spritesheet_jumper.png'
-SPRITESHEET_TRUMP = 'trump_iddle.png'
 
 # player properties 
 PLAYER_ACC = 0.5 

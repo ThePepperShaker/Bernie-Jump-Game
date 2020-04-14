@@ -156,16 +156,8 @@ class Mob(pg.sprite.Sprite):
 		pow_img = pg.image.load(path.join(img_dir, 'medkit2.png')).convert()
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-
-		#images = [self.game.trump_iddle.png.get_image(0, 192, 380, 94), 
-		#		 self.game.spritesheet2.get_image(0, 96, 380, 94), 
-		#		 self.game.spritesheet2.get_image(382, 408, 200, 100), 
-		#		 self.game.spritesheet2.get_image(232, 1288, 200, 100)]
-
 		self.image_straight = pg.image.load(path.join(img_dir, 'trumpstraight.png')).convert()
 		self.image_straight.set_colorkey(BLACK)
-		self.image_right = pg.image.load(path.join(img_dir, 'trumpworks.png')).convert()
-		self.image_right.set_colorkey(BLACK)
 		self.image_left = pg.image.load(path.join(img_dir, 'trump.png')).convert()
 		self.image_left.set_colorkey(BLACK)
 		self.image = self.image_straight
@@ -177,16 +169,6 @@ class Mob(pg.sprite.Sprite):
 		self.rect.y = randrange(HEIGHT / 2)
 		self.vy = 0
 		self.dy = 0.5 
-		self.shoot_delay = 3000
-		self.last_shot = pg.time.get_ticks()
-
-	def shoot(self):
-		now = pg.time.get_ticks()
-		if now - self.last_shot > self.shoot_delay:
-			self.last_shot = now 
-			bullet = Bullet(self.rect.centerx, self.rect.top)
-			all_sprites.add(bullet)
-			#shoot_sound.play()
 
 	def update(self):
 		self.rect.x += self.vx 
@@ -194,9 +176,7 @@ class Mob(pg.sprite.Sprite):
 		if self.vy > 3 or self.vy < - 3:
 			self.dy *= -1
 		center = self.rect.center 
-		if self.vx > 0:
-			self.image = self.image_right
-		elif self.vx < 0: 
+		if self.vx < 0: 
 			self.image = self.image_left
 		else:
 			self.image = self.image_straight 
@@ -206,25 +186,6 @@ class Mob(pg.sprite.Sprite):
 		self.rect.y += self.vy 
 		if self.rect.left > WIDTH + 100 or self.rect.right < -100:
 			self.kill()
-		if self.rect.center == WIDTH /2:
-			self.shoot()
-
-class Bullet(pg.sprite.Sprite):
-	def __init__(self, x, y):
-		self._layer = BULLET_LAYER
-		self.groups = game.all_sprites, game.bullets
-		pg.sprite.Sprite.__init__(self)
-		self.image = pg.image.load(path.join(img_dir, 'bullet_img.png')).convert()
-		self.image.set_colorkey(BLACK)
-		self.rect = self.image.get_rect()
-		self.rect.bottom = y 
-		self.rect.centerx = x
-		self.speedy = -10
-	def update(self):
-		self.rect.y += self.speedy 
-		if self.rect.bottom < 0:
-			self.kill()
-
 
 
 

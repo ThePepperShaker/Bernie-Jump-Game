@@ -1,9 +1,8 @@
-# platform game 
+# Bernie Jump
 
 # Art from Kenney.nl
-# Bernie and Trump art from 'Super Smash Presidents Game - Open Source Game Project'
+# Bernie and Trump art from 'Super Smash Presidents Game -github.com/'
 # Xeon theme https://opengameart.org/users/bart
-
 import pygame as pg
 import random 
 from settings import *
@@ -16,7 +15,9 @@ class Game:
 	def __init__(self):
 		# initialize game window, etc 
 		pg.init()
-		pg.mixer.init()
+		pg.mixer.init(channels = 1)
+		self.channel1 = pg.mixer.Channel(0) # argument must be int
+		self.channel2 = pg.mixer.Channel(1)
 		self.screen = pg.display.set_mode((WIDTH, HEIGHT))
 		pg.display.set_caption('Bernie Jump')
 		self.clock = pg.time.Clock()
@@ -35,7 +36,6 @@ class Game:
 				self.highscore = 0
 		# load spritesheet image 
 		self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
-		self.spritesheet2 = Spritesheet2(path.join(img_dir, SPRITESHEET_TRUMP))
 		# load sounds 
 		self.snd_dir = path.join(self.dir, 'sound')
 		self.jump_sound = pg.mixer.Sound(path.join(self.snd_dir, 'Huge.wav'))
@@ -55,6 +55,7 @@ class Game:
 		# Trump soundbit
 		self.trumpcollide_sound = pg.mixer.Sound(path.join(self.snd_dir, 'CrazyBernie.wav'))
 		self.trumpcollide_sound.set_volume(0.5)
+
  
 	def new(self):
 		# start a new game
@@ -97,7 +98,7 @@ class Game:
 		# hit mobs
 		mob_hits = pg.sprite.spritecollide(self.player, self.mobs, False, pg.sprite.collide_mask)
 		if mob_hits:
-			self.trumpcollide_sound.play()
+			self.channel1.play(self.trumpcollide_sound)
 			self.playing = False
 
 		# check if player hits a platform - only if falling
@@ -132,17 +133,17 @@ class Game:
 		end_time = pg.time.get_ticks() + 5000
 		for pow in pow_hits:
 			if pow.type == 'healthcare':
-				self.boost_sound.play()
+				self.channel1.play(self.boost_sound)
 				self.player.vel.y = -BOOST_POWER
 				self.player.jumping = False
 			if pow.type == 'education':
-				self.educ_sound.play()
+				self.channel1.play(self.educ_sound)
 				for mob in self.mobs:
 					mob.kill()
 				self.player.jumping = False
 			now = pg.time.get_ticks()
 			if pow.type == 'tax':
-				self.tax_sound.play()
+				self.channel1.play(self.tax_sound)
 				self.score += 100
 				self.player.jumping = False 
 				if now - self.mob_timer > 5000:
@@ -155,37 +156,15 @@ class Game:
 				sprite.rect.y -= max(self.player.vel.y, 10)
 				if sprite.rect.bottom < 0:
 					sprite.kill()
-					self.die_sound.play()
+					self.channel1.play(self.die_sound)
 		if len(self.platforms) == 0: 
 			self.playing = False
 
 		# spawn new platforms to keep same average number of platforms
-		while len(self.platforms) < 8:
+		while len(self.platforms) < 10:
 			width = random.randrange(50, 100)
 			p = Platform(self, random.randrange(0, WIDTH - width),
 						 random.randrange(-75, -30, 5))
-
-
-
-		# calculate the distance between two platforms 
-
-	
-
-
-
-
-		# If the score reaches 5000, allow for more enemies to spawn, and allow them to shoot
-		if self.score > 1000:
-			now = pg.time.get_ticks()
-			if now - self.mob_timer > 4000 + random.choice([-1000, 500, 0, 500, 1000]):
-				self.mob_timer = now
-				Mob(self)
-			# mob hits player with bullet 
-			player_hits = pg.sprite.spritecollide(self.player, self.bullets, True, pg.sprite.collide_mask)
-			if player_hits:
-				self.playing = False
-
-
 
 	def events(self):
 		# game loop - events
@@ -209,7 +188,8 @@ class Game:
 		self.screen.blit(background2, background2_rect)
 		# self.screen.fill(BGCOLOR)
 		self.all_sprites.draw(self.screen)
-		self.draw_text(str(self.score), 22, WHITE, WIDTH / 2, 15)
+		self.draw_text("Score: " + str(self.score), 22, WHITE, WIDTH / 2, 15)
+		self.draw_text("Highscore: " + str(self.highscore), 22, WHITE, WIDTH / 2, 40)
 		# after drawing everything, flip the display 
 		pg.display.flip()
 
