@@ -27,7 +27,7 @@ class Game:
 
 	def load_data(self):
 		# load high score 
-		self.dir = path.dirname(__file__)
+		self.dir = path.dirname('__file__')
 		img_dir = path.join(self.dir, 'img')
 		with open(path.join(self.dir, HS_FILE), 'r+') as f:
 			try:
@@ -64,12 +64,10 @@ class Game:
 		self.platforms = pg.sprite.Group()
 		self.powerups = pg.sprite.Group()
 		self.mobs = pg.sprite.Group()
-		self.bullets = pg.sprite.Group()
 		self.player = Player(self)
 		for plat in PLATFORM_LIST:
 			Platform(self, *plat)
 		self.mob_timer = 0
-		self.plat_timer = 30000
 		pg.mixer.music.load(path.join(self.snd_dir, 'xeon6.ogg'))
 		pg.mixer.music.set_volume(0.2)
 		self.run()
@@ -102,19 +100,19 @@ class Game:
 			self.playing = False
 
 		# check if player hits a platform - only if falling
-		if self.player.vel.y > 0:
+		if self.player.vel.y > 0: 
 			hits = pg.sprite.spritecollide(self.player, self.platforms, False)
 			if hits:
 				lowest = hits[0]
-				for hit in hits:
-					if hit.rect.bottom > lowest.rect.bottom:
-						lowest = hit
-				if self.player.pos.x < lowest.rect.right + 10 and self.player.pos.x > lowest.rect.left - 10:
-					if self.player.pos.y < lowest.rect.centery:
-						self.player.pos.y = lowest.rect.top
+				for hit in hits: 
+					if hit.rect.bottom > lowest.rect.bottom: 
+						lowest = hit 
+				if self.player.pos.x < lowest.rect.right + 10 and \
+					self.player.pos.x > lowest.rect.left - 10: 
+					if self.player.pos.y < hits[0].rect.bottom:
+						self.player.pos.y = hits[0].rect.top
 						self.player.vel.y = 0
 						self.player.jumping = False
-
 
 		# if player reaches top 1/4th of screen 
 		if self.player.rect.top <= HEIGHT / 4:
@@ -161,10 +159,10 @@ class Game:
 			self.playing = False
 
 		# spawn new platforms to keep same average number of platforms
-		while len(self.platforms) < 10:
+		while len(self.platforms) < 6:
 			width = random.randrange(50, 100)
-			p = Platform(self, random.randrange(0, WIDTH - width),
-						 random.randrange(-75, -30, 5))
+			Platform(self, random.randrange(0, WIDTH - width),
+						 random.randrange(-75, -30, 15))
 
 	def events(self):
 		# game loop - events
