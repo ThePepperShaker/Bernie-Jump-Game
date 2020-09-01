@@ -1,4 +1,5 @@
-# Sprite classes for Bernie on the run 
+# Sprite classes for Bernie Jump 
+ 
 from settings import *
 import pygame as pg
 from os import path
@@ -23,18 +24,6 @@ class Spritesheet:
 		image = pg.transform.scale(image, (width // 3, height // 3))
 		return image
 
-class Spritesheet2:
-	# utility class for loading and parsing spritesheets
-	def __init__(self, filename):
-		self.spritesheet2 = pg.image.load(filename).convert()
-
-	def get_image(self, x, y, width, height):
-		# grab an image out of a larger spritesheet
-		image = pg.Surface((width, height))
-		image.blit(self.spritesheet2, (0, 0), (x, y, width, height))
-		image = pg.transform.scale(image, (width // 3, height // 3))
-		return image
-
 class Player(pg.sprite.Sprite):
 	def __init__(self, game):
 		self._layer = PLAYER_LAYER
@@ -51,19 +40,18 @@ class Player(pg.sprite.Sprite):
 		self.vel = vec(0, 0)
 		self.acc = vec(0, 0)
 
-
 	def jump_cut(self):
 		if self.jumping:
-			if self.vel.y < -5:
-				self.vel.y = -5
+			if self.vel.y < -3:
+				self.vel.y = -3
 
 	def jump(self):
 		# jump only if standing on a platform
-		self.rect.x += 2
+		self.rect.y += 2
 		hits = pg.sprite.spritecollide(self, self.game.platforms, False)
-		self.rect.x -= 2
+		self.rect.y -= 2
 		if hits and not self.jumping:
-			# self.game.jump_sound.play()
+			self.game.jump_sound.play()
 			self.jumping = True		
 			self.vel.y = -PLAYER_JUMP
 
@@ -80,13 +68,15 @@ class Player(pg.sprite.Sprite):
 		# apply friction	
 		self.acc.x += self.vel.x * PLAYER_FRICTION
 		# equations of motion
-		self.vel += self.acc 
+		self.vel += self.acc
+		if abs(self.vel.x) < 0.1:
+			self.vel.x = 0
 		self.pos += self.vel + 0.5 * self.acc
 		# wrap around the sides of the screen 
-		if self.pos.x > WIDTH:
-			self.pos.x = 0
-		if self.pos.x < 0:
-			self.pos.x = WIDTH
+		if self.pos.x > WIDTH + self.rect.width / 2:
+			self.pos.x = 0 - self.rect.width / 2
+		if self.pos.x < 0 - self.rect.width / 2:
+			self.pos.x = WIDTH + self.rect.width / 2
 
 		self.rect.midbottom = self.pos
 
@@ -116,8 +106,7 @@ class Platform(pg.sprite.Sprite):
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.x = x 
-		self.rect.y = y 
-
+		self.rect.y = y
 		if randrange(100) < POW_SPAWN_PCT:
 			Pow(self.game, self)
 
