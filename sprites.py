@@ -51,7 +51,7 @@ class Player(pg.sprite.Sprite):
 		hits = pg.sprite.spritecollide(self, self.game.platforms, False)
 		self.rect.y -= 2
 		if hits and not self.jumping:
-			self.game.jump_sound.play()
+			# self.game.jump_sound.play()
 			self.jumping = True		
 			self.vel.y = -PLAYER_JUMP
 
@@ -145,9 +145,9 @@ class Mob(pg.sprite.Sprite):
 		pow_img = pg.image.load(path.join(img_dir, 'medkit2.png')).convert()
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-		self.image_straight = pg.image.load(path.join(img_dir, 'trumpstraight.png')).convert()
+		self.image_straight = pg.image.load(path.join(img_dir, 'Trump_right.png')).convert()
 		self.image_straight.set_colorkey(BLACK)
-		self.image_left = pg.image.load(path.join(img_dir, 'trump.png')).convert()
+		self.image_left = pg.image.load(path.join(img_dir, 'Trump_left.png')).convert()
 		self.image_left.set_colorkey(BLACK)
 		self.image = self.image_straight
 		self.rect = self.image.get_rect()
