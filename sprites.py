@@ -110,6 +110,11 @@ class Platform(pg.sprite.Sprite):
 		if randrange(100) < POW_SPAWN_PCT:
 			Pow(self.game, self)
 
+	# def dist_between_plats(self):
+	#	for plat in self.platforms:
+	#		dist = self.rect.centerx - plat.rect.centerx
+
+
 
 class Pow(pg.sprite.Sprite):
 	def __init__(self, game, plat):
