@@ -174,9 +174,13 @@ class Game:
 			if event.type == pg.KEYDOWN:
 				if event.key == pg.K_SPACE:
 					self.player.jump()
+				if event.key == pg.K_DOWN:
+					self.player.duck()
 			if event.type == pg.KEYUP:
 				if event.key == pg.K_SPACE:
 					self.player.jump_cut()
+				if event.key == pg.K_DOWN:
+					self.player.duck_cut()
 
 
 	def draw(self):
@@ -196,7 +200,7 @@ class Game:
 		# game start screen
 		pg.mixer.music.load(path.join(self.snd_dir, 'loading.wav'))
 		pg.mixer.music.play(loops=-1)
-		background = pg.image.load(path.join(img_dir, 'BernieBG.png')).convert()
+		background = pg.image.load(path.join(img_dir, 'usa_bernie.png')).convert()
 		background_rect = background.get_rect()
 		self.screen.blit(background, background_rect)
 		self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
