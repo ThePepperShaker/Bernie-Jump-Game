@@ -1,4 +1,13 @@
 # Sprite classes for Bernie Jump 
+# All sprites are my own - should be obvious by how bad they are lol 
+# Code adapted from platformer series by KidsCanCode on YouTube
+# Additional features I added: 
+#  - Increasing difficulty 
+#  - New powerups 
+#  - my own sprites and game design 
+#  - Soundclips for Bernie and Trump 
+#  - Changed the functionality of the platforms 
+
  
 from settings import *
 import pygame as pg
@@ -28,11 +37,12 @@ class Player(pg.sprite.Sprite):
 	def __init__(self, game):
 		self._layer = PLAYER_LAYER
 		self.groups = game.all_sprites
-		player_img = pg.image.load(path.join(img_dir, 'bernie.png')).convert()
+		player_img = pg.image.load(path.join(img_dir, 'bernie_static.png')).convert()
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
 		self.jumping = False
-		self.image = pg.transform.scale(player_img, (60, 85))
+		self.ducking = False
+		self.image = pg.transform.scale(player_img, (100, 100))
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.center = (40, HEIGHT - 100)
@@ -54,6 +64,15 @@ class Player(pg.sprite.Sprite):
 			# self.game.jump_sound.play()
 			self.jumping = True		
 			self.vel.y = -PLAYER_JUMP
+
+	def duck(self):
+		self.pos.y -= 2
+		hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+		if hits and not self.ducking:
+			self.ducking = True
+
+	def duck_cut(self):
+		self.ducking = False
 
 	def update(self): 
 		self.animate()
@@ -82,13 +101,21 @@ class Player(pg.sprite.Sprite):
 
 	def animate(self):
 		now = pg.time.get_ticks()
-		player_img = pg.image.load(path.join(img_dir, 'bernie.png')).convert()
-		player_jump_img = pg.image.load(path.join(img_dir, 'bernie_jump.png')).convert()
-		if self.jumping: 
-			self.image = pg.transform.scale(player_jump_img, (60, 85))
+		player_img = pg.image.load(path.join(img_dir, 'bernie_sanders1.png')).convert()
+		player_jump_right_img = pg.image.load(path.join(img_dir, 'bernie_sanders2.png')).convert()
+		player_jump_left_img = pg.image.load(path.join(img_dir, 'bernie_sanders3.png')).convert()
+		player_duck_img = pg.image.load(path.join(img_dir, 'bernie_sanders4.png')).convert()
+		if self.jumping and self.vel.x >= 0: 
+			self.image = pg.transform.scale(player_jump_right_img, (80, 105))
 			self.image.set_colorkey(BLACK)
-		if not self.jumping:
-			self.image = pg.transform.scale(player_img, (60, 85))
+		if self.jumping and self.vel.x < 0: 
+			self.image = pg.transform.scale(player_jump_left_img, (80, 105))
+			self.image.set_colorkey(BLACK)
+		if self.ducking: 
+			self.image = pg.transform.scale(player_duck_img, (80, 105))
+			self.image.set_colorkey(BLACK)
+		if not self.jumping and not self.ducking:
+			self.image = pg.transform.scale(player_img, (80, 105))
 			self.image.set_colorkey(BLACK)
 		self.mask = pg.mask.from_surface(self.image)
 
@@ -152,6 +179,7 @@ class Mob(pg.sprite.Sprite):
 		self.game = game
 		self.image_straight = pg.image.load(path.join(img_dir, 'Trump_right.png')).convert()
 		self.image_straight.set_colorkey(BLACK)
+		# self.image_straight = pg.transform.scale(self.image_straight, (80, 105))
 		self.image_left = pg.image.load(path.join(img_dir, 'Trump_left.png')).convert()
 		self.image_left.set_colorkey(BLACK)
 		self.image = self.image_straight
