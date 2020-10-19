@@ -12,7 +12,7 @@
 from settings import *
 import pygame as pg
 from os import path
-from random import choice, randrange
+from random import choice, randrange, randint
 import time
 
 # pre-assign vector function to vec 
@@ -125,17 +125,59 @@ class Platform(pg.sprite.Sprite):
 		self.groups = game.all_sprites, game.platforms
 		pg.sprite.Sprite.__init__(self, self.groups)
 		self.game = game
-		images = [self.game.spritesheet.get_image(0, 192, 380, 94), 
-				 self.game.spritesheet.get_image(0, 96, 380, 94), 
-				 self.game.spritesheet.get_image(382, 408, 200, 100), 
-				 self.game.spritesheet.get_image(232, 1288, 200, 100)]
-		self.image = choice(images)
+		self.lg_plat_broken_img = self.game.spritesheet.get_image(0, 192, 380, 94)
+		self.lg_plat_img = self.game.spritesheet.get_image(0, 96, 380, 94)
+		self.sml_plat_img = self.game.spritesheet.get_image(382, 408, 200, 100)
+		self.sml_plat_broken_img = self.game.spritesheet.get_image(232, 1288, 200, 100)
+		self.kind = 0 
+		self.image = self.determine_image()
 		self.image.set_colorkey(BLACK)
 		self.rect = self.image.get_rect()
 		self.rect.x = x 
 		self.rect.y = y
 		if randrange(100) < POW_SPAWN_PCT:
 			Pow(self.game, self)
+	
+	def probabilities(self):
+		chance = randint(0,100)
+		if self.game.score < 300: 
+			self.kind = 0 
+		elif self.game.score < 600: 
+			if chance < 85: 
+				self.kind = 0 
+			else:
+				self.kind = 1
+		elif self.game.score < 1000: 
+			if chance < 75: 
+				self.kind = 0 
+			elif chance < 85: 
+				self.kind = 1 
+			else: 
+				self.kind = 2
+		else:
+			if chance < 50: 
+				self.kind = 0 
+			elif chance < 75: 
+				self.kind = 1
+			elif chance < 85: 
+				self.kind = 2
+			else:
+				self.kind = 3
+	
+	def determine_image(self):
+		self.probabilities()
+		if self.kind == 0:
+			self.image = self.lg_plat_img
+		elif self.kind == 1: 
+			self.image = self.sml_plat_img
+		elif self.kind == 2: 
+			self.image = self.lg_plat_broken_img
+		else: 
+			self.image = self.sml_plat_broken_img
+		return self.image
+		
+			
+			
 
 	# def dist_between_plats(self):
 	#	for plat in self.platforms:
