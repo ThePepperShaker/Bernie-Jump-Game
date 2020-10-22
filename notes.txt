@@ -1,0 +1,60 @@
+# Q Learning Algorithm 
+
+## Variables to consider 
+
+- Learning Rate 
+- Discount Factor 
+- Initial Conditions (Q_0) 
+
+## Implementation 
+
+- Q Learning stores data in tables. 
+- It can be combined with function approximation to apply the algorithm to larger problems 
+- Can use a neural network as a function approximator 
+- Function approximation may speed up learning in finite problems
+
+## Defining the environment for Bernie Jump 
+
+- States 
+- Actions 
+- Rewards 
+- The Bellman Equation 
+
+### Paper from GitHub implementing Q Learning for Doodle Jump 
+
+Parameters: 
+- x_division, y_division: Round distance to nearest division 
+- brain.learning_rate: Scales how fast the predicted rewards change 
+- scale_death: Adjusts the penalty for death at higher rates 
+- decision: The y velocity at which a decision is made
+
+
+
+
+
+### DISTANCE FROM PLAYER TO NEAREST PLATFORM: 
+- Create a function to calculate distance from player to platform
+- Iterate over all platforms to find the closest one
+- Currently using leftmost x position - Should probably change this to center?
+
+- - Works: 21/10/20
+
+### CHOOSE THE OPTIMAL PLATFORM FROM LIST OF PLATFORMS: 
+- Loop over distances list and choose 
+if not self.colliding: 
+	player.pos towards nearest platform
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

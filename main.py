@@ -10,6 +10,7 @@ from sprites import *
 from os import path
 import time
 import pygame.mask
+import math
 
 class Game:
 	def __init__(self):
@@ -65,6 +66,7 @@ class Game:
 		self.powerups = pg.sprite.Group()
 		self.mobs = pg.sprite.Group()
 		self.player = Player(self)
+		print(self.player.pos)
 		for plat in PLATFORM_LIST:
 			Platform(self, *plat)
 		self.mob_timer = 0
@@ -161,8 +163,36 @@ class Game:
 		# spawn new platforms to keep same average number of platforms
 		while len(self.platforms) < 6:
 			width = random.randrange(50, 100)
-			Platform(self, random.randrange(0, WIDTH - width),
+			plat = Platform(self, random.randrange(0, WIDTH - width),
 						 random.randrange(-75, -30, 15))
+		self.print_dist_player_to_plat()
+
+		
+	
+	def print_dist_player_to_plat(self):
+		dist_list = []
+		plat_list = []
+		for plat in self.platforms: 
+			plat_coords = [plat.rect.x, plat.rect.y]
+			dist = round(self.dist_player_to_plat(plat_coords), 2)
+			dist_list += [dist]
+			plat_list += [plat_coords]
+		print(dist_list)
+		return plat_list, dist_list
+	
+	def draw_line_to_plat(self):
+		for plat in self.platforms: 
+			self.plat_coords = [plat.rect.x, plat.rect.y]
+			pg.draw.line(self.screen,RED,self.player.pos, self.plat_coords, 1) 
+
+	
+	def dist_player_to_plat(self, plat_coords):
+		# Function to compute distance from player to platform 
+		self.player_coords = self.player.pos
+		self.plat_coords = plat_coords
+		distance = math.sqrt( ((self.player_coords[0]-self.plat_coords[0])**2)+((self.player_coords[1]-self.plat_coords[1])**2) )
+		return distance
+	
 
 	def events(self):
 		# game loop - events
@@ -192,6 +222,7 @@ class Game:
 		self.all_sprites.draw(self.screen)
 		self.draw_text("Score: " + str(self.score), 22, WHITE, WIDTH / 2, 15)
 		self.draw_text("Highscore: " + str(self.highscore), 22, WHITE, WIDTH / 2, 40)
+		self.draw_line_to_plat()
 		# after drawing everything, flip the display 
 		pg.display.flip()
 
