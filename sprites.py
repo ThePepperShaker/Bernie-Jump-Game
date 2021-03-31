@@ -1,5 +1,5 @@
 # Sprite classes for Bernie Jump 
-# All sprites are my own - should be obvious by how bad they are lol 
+# All sprites are my own
 # Code adapted from platformer series by KidsCanCode on YouTube
 # Additional features I added: 
 #  - Increasing difficulty 
